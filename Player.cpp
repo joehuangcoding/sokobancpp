@@ -1,6 +1,10 @@
 #include "Player.h"
 
-Player::Player() : row(0), col(0) {}
+Player::Player()
+{
+    row = 0;
+    col = 0;
+}
 
 void Player::reset(const Map& map) {
     map.findPlayer(row, col);

@@ -1,23 +1,19 @@
 #pragma once
 #include "Map.h"
 #include "Player.h"
-
+#include "LEDBlink.h"
 class Game {
-public:
-    Game();
+    public:
+        Game();
+        void run();
 
-    // Start the game loop
-    void run();
+    private:
+        Map map;
+        Player player;
+        LEDBlink ledBlinkCtl;
+        bool running;
+        int moves;
 
-private:
-    Map map;
-    Player player;
-    bool running;
-    int moves;
-
-    // Non-blocking terminal input
-    void setNonBlocking(bool enable);
-
-    // Handle key input
-    void handleInput(char key);
+        void setNonBlocking(bool enable);
+        void handleInput(char key);
 };

@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "LEDBlink.h"
 #include <iostream>
 #include <unistd.h>
 #include <termios.h>
@@ -12,6 +13,7 @@ Game::Game() {
     moves = 0;
     map.reset();
     player.reset(map);
+    ledBlinkCtl.set(false);
 }
 
 void Game::setNonBlocking(bool enable) {
@@ -35,9 +37,11 @@ void Game::handleInput(char key) {
 }
 
 void Game::run() {
-    struct termios old_tio, new_tio;
-    tcgetattr(STDIN_FILENO, &old_tio);
-    new_tio = old_tio;
+    struct termios new_tio;
+    // struct termios old_tio, new_tio;
+    // tcgetattr(STDIN_FILENO, &old_tio);
+    // new_tio = old_tio;
+    tcgetattr(STDIN_FILENO, &new_tio);
     new_tio.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &new_tio);
     setNonBlocking(true);
@@ -47,9 +51,11 @@ void Game::run() {
 
         // Check for win
         if (map.checkWin()) {
-            cout << "   *** YOU WIN! ***\n";
-            // cout << "   Press R to restart or Q to quit\n";
 
+            ledBlinkCtl.set(true);
+
+            cout << "   *** YOU WIN! ***\n";
+            //Blocking IO wait for input
             setNonBlocking(false);
             char ch = 0;
             ssize_t n = read(STDIN_FILENO, &ch, 1);
@@ -58,6 +64,9 @@ void Game::run() {
             if (n == 1) {
                 handleInput(ch);
             }
+
+            ledBlinkCtl.set(false);
+            
             continue;
         }
 
@@ -71,8 +80,8 @@ void Game::run() {
     }
 
     // Restore terminal
-    tcsetattr(STDIN_FILENO, TCSANOW, &old_tio);
-    setNonBlocking(false);
+    // tcsetattr(STDIN_FILENO, TCSANOW, &old_tio);
+    // setNonBlocking(false);
 
     cout << "\nGoodbye!\n";
 }

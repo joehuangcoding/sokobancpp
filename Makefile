@@ -1,10 +1,10 @@
 # Compilers
 CXX       ?= g++
 CROSS     ?= aarch64-linux-gnu-
-CXXFLAGS  := -Wall -Wextra -std=c++17 -O2 -MMD -MP
+CXXFLAGS  := -Wall -Wextra -std=c++17 -O2 -MMD -MP -static
 
 # Sources
-SRC = main.cpp Map.cpp Player.cpp Game.cpp
+SRC = main.cpp Map.cpp Player.cpp Game.cpp LEDBlink.cpp
 
 # Host build
 OBJ_HOST = $(SRC:.cpp=.o)
